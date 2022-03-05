@@ -23,9 +23,9 @@ contract FundMe {
     // when you call a payable function you can add a wei value to it, the contract will be the owner of that amount of wei
     function fund() public payable {
         // set min price to $20
-        uint256 minUSD = 20 * 10**18; // 20 * 10^18 per avere il numero a 18 cifre
+        uint256 minimumUSD = 20 * 10**18; // 20 * 10^18 per avere il numero a 18 cifre
         require(
-            getConversionRate(msg.value) >= minUSD,
+            getConversionRate(msg.value) >= minimumUSD,
             "Minimum required: $20"
         );
         addressToAmountFunded[msg.sender] += msg.value;
@@ -51,12 +51,20 @@ contract FundMe {
         return ethAmountInUsd;
     }
 
+    function getEntranceFee() public view returns (uint256) {
+        // minimumUSD
+        uint256 minimumUSD = 20 * 10**18;
+        uint256 price = getPrice();
+        uint256 precision = 1 * 10**18;
+        return ((minimumUSD * precision) / price) + 1;
+    }
+
     modifier onlyOwner() {
-        require(msg.sender == owner);
+        require(msg.sender == owner, "tentativo di prelievo fallito");
         _; // run the rest of the code under the modifier
     }
 
-    function withdraw() public payable {
+    function withdraw() public payable onlyOwner {
         msg.sender.transfer(address(this).balance);
 
         for (
@@ -69,13 +77,5 @@ contract FundMe {
         }
 
         funders = new address[](0);
-    }
-
-    function getEntranceFee() public view returns (uint256) {
-        // minimum USD
-        uint256 minimumUSD = 20 * 10**18;
-        uint256 price = getPrice();
-        uint256 precision = 1 * 10**18;
-        return (minimumUSD * precision) / price;
     }
 }

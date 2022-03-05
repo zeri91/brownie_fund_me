@@ -3,6 +3,7 @@ from web3 import Web3
 
 FORKED_LOCAL_ENVIRONMENTS = ["mainnet-fork", "mainnet-fork-dev"]
 LOCAL_BLOCKCHAIN_ENVIRONMENTS = ["development", "ganache-local"]
+
 DECIMALS = 8
 STARTING_PRICE = 200000000000
 
@@ -18,9 +19,8 @@ def get_account():
 
 
 def deploy_mocks():
-    print(f"the active network is {network.show_active()}")
-    print("deploying mocks...")
+    print(f"The active network is {network.show_active()}")
+    print("Deploying Mocks...")
     if len(MockV3Aggregator) <= 0:
-        mock_aggregator = MockV3Aggregator.deploy(
-            DECIMALS, STARTING_PRICE, {"from": get_account()}
-        )
+        MockV3Aggregator.deploy(DECIMALS, STARTING_PRICE, {"from": get_account()})
+    print("Mocks Deployed!")
