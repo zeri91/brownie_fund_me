@@ -17,6 +17,7 @@ def test_can_fund_and_withdraw():
 
 
 def test_only_owner_can_withdraw():
+    # we don't want to do this test on all the networks
     if network.show_active() not in LOCAL_BLOCKCHAIN_ENVIRONMENTS:
         pytest.skip("only for local testing")
     fund_me = deploy_fund_me()
